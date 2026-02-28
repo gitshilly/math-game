@@ -5,8 +5,13 @@ import HomePage from './components/HomePage';
 import QuizPage from './components/QuizPage';
 import ResultPage from './components/ResultPage';
 import ShopPage from './components/ShopPage';
+import GameHub, { MiniGame } from './components/GameHub';
+import SnakeGame from './components/games/SnakeGame';
+import Game24 from './components/games/Game24';
+import NumberPuzzle from './components/games/NumberPuzzle';
+import TicTacToe from './components/games/TicTacToe';
 
-type Page = 'home' | 'quiz' | 'result' | 'shop';
+type Page = 'home' | 'quiz' | 'result' | 'shop' | 'gameHub' | 'snake' | 'game24' | 'puzzle' | 'tictactoe';
 
 interface QuizResult {
   question: Question;
@@ -48,6 +53,23 @@ function App() {
     setPage('shop');
   }, []);
 
+  const handleOpenGameHub = useCallback(() => {
+    setPage('gameHub');
+  }, []);
+
+  const handleSelectGame = useCallback((game: MiniGame) => {
+    switch (game) {
+      case 'snake': setPage('snake'); break;
+      case 'game24': setPage('game24'); break;
+      case 'puzzle': setPage('puzzle'); break;
+      case 'tictactoe': setPage('tictactoe'); break;
+    }
+  }, []);
+
+  const handleBackToHub = useCallback(() => {
+    setPage('gameHub');
+  }, []);
+
   return (
     <div className="min-h-screen relative">
       {/* Sound toggle - floating button */}
@@ -61,7 +83,11 @@ function App() {
 
       {/* Page router */}
       {page === 'home' && (
-        <HomePage onStartQuiz={handleStartQuiz} onOpenShop={handleOpenShop} />
+        <HomePage
+          onStartQuiz={handleStartQuiz}
+          onOpenShop={handleOpenShop}
+          onOpenGameHub={handleOpenGameHub}
+        />
       )}
       {page === 'quiz' && (
         <QuizPage
@@ -80,6 +106,21 @@ function App() {
       )}
       {page === 'shop' && (
         <ShopPage onClose={handleGoHome} />
+      )}
+      {page === 'gameHub' && (
+        <GameHub onSelectGame={handleSelectGame} onBack={handleGoHome} />
+      )}
+      {page === 'snake' && (
+        <SnakeGame onBack={handleBackToHub} />
+      )}
+      {page === 'game24' && (
+        <Game24 onBack={handleBackToHub} />
+      )}
+      {page === 'puzzle' && (
+        <NumberPuzzle onBack={handleBackToHub} />
+      )}
+      {page === 'tictactoe' && (
+        <TicTacToe onBack={handleBackToHub} />
       )}
     </div>
   );

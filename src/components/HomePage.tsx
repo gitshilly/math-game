@@ -6,16 +6,19 @@ import ProgressBar from './ProgressBar';
 import CoinDisplay from './CoinDisplay';
 import StreakFire from './StreakFire';
 import GradeSelector from './GradeSelector';
+import PasswordModal from './PasswordModal';
 import { playClickSound } from '../utils/sound';
 
 interface HomePageProps {
   onStartQuiz: () => void;
   onOpenShop: () => void;
+  onOpenGameHub: () => void;
 }
 
-export default function HomePage({ onStartQuiz, onOpenShop }: HomePageProps) {
+export default function HomePage({ onStartQuiz, onOpenShop, onOpenGameHub }: HomePageProps) {
   const { stats, grade, currentTitle, soundEnabled, equippedFrame } = useGame();
   const [showGradeSelector, setShowGradeSelector] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [particles, setParticles] = useState<{ id: number; x: number; size: number; delay: number; duration: number }[]>([]);
   const gradeConfig = getGradeConfig(grade);
 
@@ -169,6 +172,18 @@ export default function HomePage({ onStartQuiz, onOpenShop }: HomePageProps) {
           开始练习
         </button>
 
+        {/* Game Hub entry */}
+        <button
+          onClick={() => {
+            if (soundEnabled) playClickSound();
+            setShowPasswordModal(true);
+          }}
+          className="w-full mt-4 py-4 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 rounded-2xl font-bold text-lg text-white btn-game glow-green flex items-center justify-center gap-3"
+        >
+          <span className="text-2xl">🎮</span>
+          游戏乐园
+        </button>
+
         {/* Quick stats */}
         <div className="mt-6 text-center text-xs text-gray-500">
           累计做了 {stats.totalQuestions} 道题 · 正确率{' '}
@@ -182,6 +197,17 @@ export default function HomePage({ onStartQuiz, onOpenShop }: HomePageProps) {
       {/* Grade selector modal */}
       {showGradeSelector && (
         <GradeSelector onClose={() => setShowGradeSelector(false)} />
+      )}
+
+      {/* Password modal */}
+      {showPasswordModal && (
+        <PasswordModal
+          onSuccess={() => {
+            setShowPasswordModal(false);
+            onOpenGameHub();
+          }}
+          onClose={() => setShowPasswordModal(false)}
+        />
       )}
     </div>
   );
